@@ -215,8 +215,9 @@ button {
 .header_section {
     width: 100%;
     float: left;
-    background-image: url(../images/banner-bg.png);
+    background-image: url(../images/banner.jpg);
     height: auto;
+    min-height: 60%;
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
