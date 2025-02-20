@@ -215,13 +215,20 @@ button {
 .header_section {
     width: 100%;
     text-align: center;
+    background-image: url(../images/banner.jpg); /* Background image */
+    background-size: cover; /* Covers the whole section */
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px 0; /* Adds some spacing for responsiveness */
 }
 
 .header_section img {
     width: 100%;
     height: auto; /* Maintain aspect ratio */
     max-height: 50vh; /* Prevent it from getting too large */
+    z-index: 10; /* Ensures the logo is above the background */
 }
+
 
 .header_bg {
     width: 100%;
