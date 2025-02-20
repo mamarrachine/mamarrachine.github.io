@@ -214,12 +214,13 @@ button {
 
 .header_section {
     width: 100%;
-    float: left;
-    background-image: url(../images/banner.jpg);
-    height: auto;
-    min-height: 60%;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
+    text-align: center;
+}
+
+.header_section img {
+    width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    max-height: 50vh; /* Prevent it from getting too large */
 }
 
 .header_bg {
@@ -309,7 +310,7 @@ button {
 
 .banner_section {
     width: 100%;
-    float: left;
+    float: center;
     padding: 90px 0px 140px 0px;
 }
 
