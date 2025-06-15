@@ -215,7 +215,7 @@ button {
 .header_section {
     width: 100%;
     text-align: center;
-    background-image: url(../images/banner.jpg); /* Background image */
+    background-image: url(../images/local/dani_taller.jpeg); /* Background image */
     background-size: cover; /* Covers the whole section */
     background-position: center;
     background-repeat: no-repeat;
@@ -223,7 +223,6 @@ button {
 }
 
 .header_section img {
-    width: 100%;
     height: auto; /* Maintain aspect ratio */
     max-height: 50vh; /* Prevent it from getting too large */
     z-index: 10; /* Ensures the logo is above the background */
@@ -1084,4 +1083,9 @@ textarea#comment.update_mail::placeholder {
 
 .margin_top90 {
     margin-top: 90px;
+}
+
+.emphasis_text {
+    color: #f01cec !important;
+    font-weight: bold;
 }
