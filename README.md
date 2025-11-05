@@ -20,11 +20,4 @@ Luego el tema CSS te he dejado claro los que son custom de los que no, por si qu
 Nada más, que la disfrutes! Jeje`
 ```
 
-
-## Migración a WP
-
-(esto ya da igual)
-
-* Ahora mismo las DNS apuntan a github pages salvo talleres.mamarrachine.org, que apunta a mi MVPS
-* El MVPS está configurado con ISPConfig
-* En el root de la webapp de talleres.mamarrachine.org hay un index.php con el mapeo entre el query parameter `campaign` y la url de cada formulario/landing correspondiente
+El hero mide 2048x1536
