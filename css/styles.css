@@ -11122,11 +11122,20 @@ header.masthead h1, header.masthead .h1 {
     font-size: 3.5rem;
   }
 }
-
-#portfolio .container-fluid, #portfolio .container-sm, #portfolio .container-md, #portfolio .container-lg, #portfolio .container-xl, #portfolio .container-xxl {
+#portfolio .container-fluid,
+#portfolio .container-sm,
+#portfolio .container-md,
+#portfolio .container-lg,
+#portfolio .container-xl,
+#portfolio .container-xxl {
   max-width: 1920px;
 }
-#portfolio .container-fluid .portfolio-box, #portfolio .container-sm .portfolio-box, #portfolio .container-md .portfolio-box, #portfolio .container-lg .portfolio-box, #portfolio .container-xl .portfolio-box, #portfolio .container-xxl .portfolio-box {
+#portfolio .container-fluid .portfolio-box,
+#portfolio .container-sm .portfolio-box,
+#portfolio .container-md .portfolio-box,
+#portfolio .container-lg .portfolio-box,
+#portfolio .container-xl .portfolio-box,
+#portfolio .container-xxl .portfolio-box {
   position: relative;
   display: block;
 }
@@ -11177,4 +11186,67 @@ header.masthead h1, header.masthead .h1 {
 #portfolio .container-xxl .portfolio-box:hover .portfolio-box-caption {
   background: rgba(244, 98, 58, 0.9);
   opacity: 1;
+}
+
+#rpg-catalog .container-fluid,
+#rpg-catalog .container-sm,
+#rpg-catalog .container-md,
+#rpg-catalog .container-lg,
+#rpg-catalog .container-xl,
+#rpg-catalog .container-xxl {
+  max-width: 1920px;
+}
+#rpg-catalog .container-fluid .rpg-catalog-box,
+#rpg-catalog .container-sm .rpg-catalog-box,
+#rpg-catalog .container-md .rpg-catalog-box,
+#rpg-catalog .container-lg .rpg-catalog-box,
+#rpg-catalog .container-xl .rpg-catalog-box,
+#rpg-catalog .container-xxl .rpg-catalog-box {
+  position: relative;
+  display: block;
+}
+#rpg-catalog .container-fluid .rpg-catalog-box .rpg-catalog-box-caption,
+#rpg-catalog .container-sm .rpg-catalog-box .rpg-catalog-box-caption,
+#rpg-catalog .container-md .rpg-catalog-box .rpg-catalog-box-caption,
+#rpg-catalog .container-lg .rpg-catalog-box .rpg-catalog-box-caption,
+#rpg-catalog .container-xl .rpg-catalog-box .rpg-catalog-box-caption,
+#rpg-catalog .container-xxl .rpg-catalog-box .rpg-catalog-box-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  opacity: 1;
+  color: #fff;
+  transition: opacity 0.25s ease;
+  text-align: center;
+  font-size: 0.8rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  background: rgba(244, 98, 58, 0.7);
+  opacity: 1;
+  padding: 5px 10px;
+}
+
+#rpg-catalog .container-fluid .rpg-catalog-box .rpg-catalog-box-caption .project-name,
+#rpg-catalog .container-sm .rpg-catalog-box .rpg-catalog-box-caption .project-name,
+#rpg-catalog .container-md .rpg-catalog-box .rpg-catalog-box-caption .project-name,
+#rpg-catalog .container-lg .rpg-catalog-box .rpg-catalog-box-caption .project-name,
+#rpg-catalog .container-xl .rpg-catalog-box .portfolio-box-caption .project-name,
+#rpg-catalog .container-xxl .rpg-catalog-box .rpg-catalog-box-caption .project-name {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+
+#rpg-catalog .tag {
+  background-color: var(--tertiary-color);
+  color: var(--bs-white);
+  padding: 0.1rem 0.2rem;
+  margin: 0.2rem;
+  text-align: center;
+  border-radius: 5px;
 }
