@@ -11138,6 +11138,7 @@ header.masthead h1, header.masthead .h1 {
 #portfolio .container-xxl .portfolio-box {
   position: relative;
   display: block;
+  border: 2px solid var(--tertiary-color);
 }
 #portfolio .container-fluid .portfolio-box .portfolio-box-caption,
 #portfolio .container-sm .portfolio-box .portfolio-box-caption,
@@ -11195,6 +11196,7 @@ header.masthead h1, header.masthead .h1 {
 #rpg-catalog .container-xxl .rpg-catalog-box {
   position: relative;
   display: block;
+  border: 2px solid var(--tertiary-color);
 }
 #rpg-catalog .container-fluid .rpg-catalog-box .rpg-catalog-box-caption,
 #rpg-catalog .container-sm .rpg-catalog-box .rpg-catalog-box-caption,
@@ -11228,7 +11230,7 @@ header.masthead h1, header.masthead .h1 {
 #rpg-catalog .container-lg .rpg-catalog-box .rpg-catalog-box-caption .project-name,
 #rpg-catalog .container-xl .rpg-catalog-box .portfolio-box-caption .project-name,
 #rpg-catalog .container-xxl .rpg-catalog-box .rpg-catalog-box-caption .project-name {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   margin-bottom: 0.5rem;
 }
 
