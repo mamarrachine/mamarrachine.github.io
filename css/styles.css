@@ -11235,8 +11235,17 @@ header.masthead h1, header.masthead .h1 {
 }
 
 
-#rpg-catalog .tag {
+.tag {
   background-color: var(--tertiary-color);
+  color: var(--bs-white);
+  padding: 0.1rem 0.2rem;
+  margin: 0.2rem;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.tag-club {
+  background-color: var(--secondary-color);
   color: var(--bs-white);
   padding: 0.1rem 0.2rem;
   margin: 0.2rem;
