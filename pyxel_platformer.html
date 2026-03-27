@@ -1,0 +1,502 @@
+
+    <html>
+    <head>
+        <style>
+            @page { size: A4; margin: 1cm; }
+            body { font-family: 'Courier New', monospace; margin: 0; padding: 0; }
+            h1 { 
+                font-family: sans-serif; 
+                border-bottom: 2px solid #333; 
+                margin: 0 0 10px 0; 
+                padding-bottom: 5px;
+            }
+            
+            .lesson-block { 
+                page-break-after: always; 
+                height: 27.5cm; /* Constrain to one page */
+                overflow: hidden; 
+            }
+            
+            pre { 
+                white-space: pre; 
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+    
+        <div class='lesson-block'>
+            <h1 style='font-size: 16pt;'>00_base.py</h1>
+            <div style='font-size: 10.32258064516129pt; line-height: 14.451612903225804pt;'>
+                <div class="highlight" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><span style="color: #080; font-weight: bold">import</span><span style="color: #BBB"> </span><span style="color: #0E84B5; font-weight: bold">pyxel</span>
+
+<span style="color: #888"># 1. Define constants for clarity</span>
+WIDTH <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">160</span>
+HEIGHT <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">120</span>
+FLOOR_Y <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">100</span>
+
+<span style="color: #080; font-weight: bold">class</span><span style="color: #BBB"> </span><span style="color: #B06; font-weight: bold">SimplePlatformer</span>:
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">__init__</span>(<span style="color: #007020">self</span>):
+        <span style="color: #888"># Initialize the window</span>
+        pyxel<span style="color: #333">.</span>init(WIDTH, HEIGHT, title<span style="color: #333">=</span><span style="background-color: #FFF0F0">&quot;Lesson 1: Basic Movement&quot;</span>)
+        
+        <span style="color: #888"># Player starting position</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">=</span> WIDTH <span style="color: #333">//</span> <span style="color: #00D; font-weight: bold">2</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> FLOOR_Y
+        
+        <span style="color: #888"># Start the game loop</span>
+        pyxel<span style="color: #333">.</span>run(<span style="color: #007020">self</span><span style="color: #333">.</span>update, <span style="color: #007020">self</span><span style="color: #333">.</span>draw)
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">update</span>(<span style="color: #007020">self</span>):
+        <span style="color: #888"># 2. Horizontal Movement logic</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_LEFT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">-=</span> <span style="color: #00D; font-weight: bold">2</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_RIGHT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">+=</span> <span style="color: #00D; font-weight: bold">2</span>
+
+        <span style="color: #888"># 3. The &quot;Infinite Wrap&quot;</span>
+        <span style="color: #888"># Keeps the player within the 0-160 range automatically</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">%=</span> WIDTH
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">draw</span>(<span style="color: #007020">self</span>):
+        <span style="color: #888"># Clear the screen (0 = black)</span>
+        pyxel<span style="color: #333">.</span>cls(<span style="color: #00D; font-weight: bold">0</span>)
+        
+        <span style="color: #888"># 4. Draw the environment</span>
+        <span style="color: #888"># rect(x, y, width, height, color)</span>
+        <span style="color: #888"># 11 = Greenish-gray for the floor</span>
+        pyxel<span style="color: #333">.</span>rect(<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">108</span>, WIDTH, <span style="color: #00D; font-weight: bold">12</span>, <span style="color: #00D; font-weight: bold">11</span>) 
+        
+        <span style="color: #888"># 5. Draw the Player</span>
+        <span style="color: #888"># Using a simple rectangle (color 3 = Green) for now</span>
+        pyxel<span style="color: #333">.</span>rect(<span style="color: #007020">self</span><span style="color: #333">.</span>x, <span style="color: #007020">self</span><span style="color: #333">.</span>y, <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">3</span>)
+
+<span style="color: #888"># Run the game</span>
+SimplePlatformer()
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class='lesson-block'>
+            <h1 style='font-size: 16pt;'>01_base_and_jump.py</h1>
+            <div style='font-size: 9.479921000658328pt; line-height: 13.271889400921658pt;'>
+                <div class="highlight" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><span style="color: #080; font-weight: bold">import</span><span style="color: #BBB"> </span><span style="color: #0E84B5; font-weight: bold">pyxel</span>
+
+WIDTH <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">160</span>
+HEIGHT <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">120</span>
+FLOOR_Y <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">100</span>
+
+<span style="color: #080; font-weight: bold">class</span><span style="color: #BBB"> </span><span style="color: #B06; font-weight: bold">SimplePlatformer</span>:
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">__init__</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>init(WIDTH, HEIGHT, title<span style="color: #333">=</span><span style="background-color: #FFF0F0">&quot;Lesson 2: Gravity &amp; Jumping&quot;</span>)
+        
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">=</span> WIDTH <span style="color: #333">//</span> <span style="color: #00D; font-weight: bold">2</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> FLOOR_Y
+        
+        <span style="color: #888"># 1. New Physics Variables</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>           <span style="color: #888"># Vertical velocity (delta Y)</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+        
+        pyxel<span style="color: #333">.</span>run(<span style="color: #007020">self</span><span style="color: #333">.</span>update, <span style="color: #007020">self</span><span style="color: #333">.</span>draw)
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">update</span>(<span style="color: #007020">self</span>):
+        <span style="color: #888"># Horizontal Movement (from Lesson 1)</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_LEFT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">-=</span> <span style="color: #00D; font-weight: bold">2</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_RIGHT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">+=</span> <span style="color: #00D; font-weight: bold">2</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">%=</span> WIDTH
+
+        <span style="color: #888"># 2. The Jump Trigger</span>
+        <span style="color: #888"># btnp means &quot;button pressed&quot; (only triggers once per tap)</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btnp(pyxel<span style="color: #333">.</span>KEY_SPACE) <span style="color: #000; font-weight: bold">and</span> <span style="color: #000; font-weight: bold">not</span> <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #333">-</span><span style="color: #00D; font-weight: bold">5</span>      <span style="color: #888"># Negative moves UP in computer graphics</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+
+        <span style="color: #888"># 3. Apply Gravity</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">+=</span> <span style="color: #60E; font-weight: bold">0.3</span>        <span style="color: #888"># Pull the player down slightly every frame</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">+=</span> <span style="color: #007020">self</span><span style="color: #333">.</span>dy     <span style="color: #888"># Update the actual position based on velocity</span>
+
+        <span style="color: #888"># 4. Floor Collision</span>
+        <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">&gt;</span> FLOOR_Y:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> FLOOR_Y  <span style="color: #888"># Snap to floor</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>       <span style="color: #888"># Stop falling</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">draw</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>cls(<span style="color: #00D; font-weight: bold">0</span>)
+        pyxel<span style="color: #333">.</span>rect(<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">108</span>, WIDTH, <span style="color: #00D; font-weight: bold">12</span>, <span style="color: #00D; font-weight: bold">11</span>) 
+        pyxel<span style="color: #333">.</span>rect(<span style="color: #007020">self</span><span style="color: #333">.</span>x, <span style="color: #007020">self</span><span style="color: #333">.</span>y, <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">3</span>)
+
+SimplePlatformer()
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class='lesson-block'>
+            <h1 style='font-size: 16pt;'>02_smiley.py</h1>
+            <div style='font-size: 8.44574780058651pt; line-height: 11.824046920821113pt;'>
+                <div class="highlight" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><span style="color: #080; font-weight: bold">import</span><span style="color: #BBB"> </span><span style="color: #0E84B5; font-weight: bold">pyxel</span>
+
+WIDTH <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">160</span>
+HEIGHT <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">120</span>
+FLOOR_Y <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">100</span>
+
+<span style="color: #080; font-weight: bold">class</span><span style="color: #BBB"> </span><span style="color: #B06; font-weight: bold">SimplePlatformer</span>:
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">__init__</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>init(WIDTH, HEIGHT, title<span style="color: #333">=</span><span style="background-color: #FFF0F0">&quot;Lesson 3: Bitmaps&quot;</span>)
+        
+        <span style="color: #888"># 1. Load your resource file</span>
+        <span style="color: #888"># This brings in your images, tilemaps, and sounds</span>
+        pyxel<span style="color: #333">.</span>load(<span style="background-color: #FFF0F0">&quot;my_resource.pyxres&quot;</span>)
+        
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">=</span> WIDTH <span style="color: #333">//</span> <span style="color: #00D; font-weight: bold">2</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> FLOOR_Y
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+        
+        pyxel<span style="color: #333">.</span>run(<span style="color: #007020">self</span><span style="color: #333">.</span>update, <span style="color: #007020">self</span><span style="color: #333">.</span>draw)
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">update</span>(<span style="color: #007020">self</span>):
+        <span style="color: #888"># Horizontal Movement (unchanged)</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_LEFT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">-=</span> <span style="color: #00D; font-weight: bold">2</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_RIGHT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">+=</span> <span style="color: #00D; font-weight: bold">2</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">%=</span> WIDTH
+
+        <span style="color: #888"># Gravity &amp; Jumping (unchanged)</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btnp(pyxel<span style="color: #333">.</span>KEY_SPACE) <span style="color: #000; font-weight: bold">and</span> <span style="color: #000; font-weight: bold">not</span> <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #333">-</span><span style="color: #00D; font-weight: bold">5</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">+=</span> <span style="color: #60E; font-weight: bold">0.3</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">+=</span> <span style="color: #007020">self</span><span style="color: #333">.</span>dy
+
+        <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">&gt;</span> FLOOR_Y:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> FLOOR_Y
+            <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">draw</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>cls(<span style="color: #00D; font-weight: bold">0</span>)
+        
+        <span style="color: #888"># Draw the Floor</span>
+        pyxel<span style="color: #333">.</span>rect(<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">108</span>, WIDTH, <span style="color: #00D; font-weight: bold">12</span>, <span style="color: #00D; font-weight: bold">11</span>) 
+        
+        <span style="color: #888"># 2. Draw the Player using a Bitmap</span>
+        <span style="color: #888"># pyxel.blt(x, y, img_bank, u, v, width, height, colkey)</span>
+        <span style="color: #888"># u,v = 0,0 is the top-left of your sprite sheet</span>
+        <span style="color: #888"># colkey = 2 means color 2 (usually dark blue) is transparent</span>
+        pyxel<span style="color: #333">.</span>blt(<span style="color: #007020">self</span><span style="color: #333">.</span>x, <span style="color: #007020">self</span><span style="color: #333">.</span>y, <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">2</span>)
+
+SimplePlatformer()
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class='lesson-block'>
+            <h1 style='font-size: 16pt;'>03_smiley_facing_movement.py</h1>
+            <div style='font-size: 8.294930875576037pt; line-height: 11.612903225806452pt;'>
+                <div class="highlight" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><span style="color: #080; font-weight: bold">import</span><span style="color: #BBB"> </span><span style="color: #0E84B5; font-weight: bold">pyxel</span>
+
+WIDTH <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">160</span>
+HEIGHT <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">120</span>
+FLOOR_Y <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">100</span>
+
+<span style="color: #080; font-weight: bold">class</span><span style="color: #BBB"> </span><span style="color: #B06; font-weight: bold">SimplePlatformer</span>:
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">__init__</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>init(WIDTH, HEIGHT, title<span style="color: #333">=</span><span style="background-color: #FFF0F0">&quot;Lesson 4: Mirroring&quot;</span>)
+        pyxel<span style="color: #333">.</span>load(<span style="background-color: #FFF0F0">&quot;my_resource.pyxres&quot;</span>)
+        
+        <span style="color: #888"># 1. New Variable: facing_sign</span>
+        <span style="color: #888"># 1 = Right (Normal), -1 = Left (Mirrored)</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">1</span>
+        
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">=</span> WIDTH <span style="color: #333">//</span> <span style="color: #00D; font-weight: bold">2</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> FLOOR_Y
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+        
+        pyxel<span style="color: #333">.</span>run(<span style="color: #007020">self</span><span style="color: #333">.</span>update, <span style="color: #007020">self</span><span style="color: #333">.</span>draw)
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">update</span>(<span style="color: #007020">self</span>):
+        <span style="color: #888"># 2. Update facing based on input</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_LEFT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">-=</span> <span style="color: #00D; font-weight: bold">2</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #333">-</span><span style="color: #00D; font-weight: bold">1</span>  <span style="color: #888"># Flip to left</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_RIGHT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">+=</span> <span style="color: #00D; font-weight: bold">2</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">1</span>   <span style="color: #888"># Flip to right</span>
+            
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">%=</span> WIDTH
+
+        <span style="color: #888"># Gravity &amp; Jumping</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btnp(pyxel<span style="color: #333">.</span>KEY_SPACE) <span style="color: #000; font-weight: bold">and</span> <span style="color: #000; font-weight: bold">not</span> <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #333">-</span><span style="color: #00D; font-weight: bold">5</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">+=</span> <span style="color: #60E; font-weight: bold">0.3</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">+=</span> <span style="color: #007020">self</span><span style="color: #333">.</span>dy
+
+        <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">&gt;</span> FLOOR_Y:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> FLOOR_Y
+            <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">draw</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>cls(<span style="color: #00D; font-weight: bold">0</span>)
+        pyxel<span style="color: #333">.</span>rect(<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">108</span>, WIDTH, <span style="color: #00D; font-weight: bold">12</span>, <span style="color: #00D; font-weight: bold">11</span>) 
+        
+        <span style="color: #888"># 3. Use facing_sign to mirror the sprite</span>
+        <span style="color: #888"># Multiplying the width (8) by self.facing_sign </span>
+        <span style="color: #888"># results in 8 (normal) or -8 (mirrored)</span>
+        pyxel<span style="color: #333">.</span>blt(<span style="color: #007020">self</span><span style="color: #333">.</span>x, <span style="color: #007020">self</span><span style="color: #333">.</span>y, <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">*</span> <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">2</span>)
+
+SimplePlatformer()
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class='lesson-block'>
+            <h1 style='font-size: 16pt;'>04_jumping_animation.py</h1>
+            <div style='font-size: 7.373271889400921pt; line-height: 10.322580645161288pt;'>
+                <div class="highlight" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><span style="color: #080; font-weight: bold">import</span><span style="color: #BBB"> </span><span style="color: #0E84B5; font-weight: bold">pyxel</span>
+
+WIDTH <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">160</span>
+HEIGHT <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">120</span>
+FLOOR_Y <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">100</span>
+
+<span style="color: #080; font-weight: bold">class</span><span style="color: #BBB"> </span><span style="color: #B06; font-weight: bold">SimplePlatformer</span>:
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">__init__</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>init(WIDTH, HEIGHT, title<span style="color: #333">=</span><span style="background-color: #FFF0F0">&quot;Lesson 5: Animation States&quot;</span>)
+        pyxel<span style="color: #333">.</span>load(<span style="background-color: #FFF0F0">&quot;my_resource.pyxres&quot;</span>)
+        
+        <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">1</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">=</span> WIDTH <span style="color: #333">//</span> <span style="color: #00D; font-weight: bold">2</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> FLOOR_Y
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+        
+        pyxel<span style="color: #333">.</span>run(<span style="color: #007020">self</span><span style="color: #333">.</span>update, <span style="color: #007020">self</span><span style="color: #333">.</span>draw)
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">update</span>(<span style="color: #007020">self</span>):
+        <span style="color: #888"># 1. Movement and Facing</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_LEFT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">-=</span> <span style="color: #00D; font-weight: bold">2</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #333">-</span><span style="color: #00D; font-weight: bold">1</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_RIGHT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">+=</span> <span style="color: #00D; font-weight: bold">2</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">1</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">%=</span> WIDTH
+
+        <span style="color: #888"># 2. Gravity and Jump Logic</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btnp(pyxel<span style="color: #333">.</span>KEY_SPACE) <span style="color: #000; font-weight: bold">and</span> <span style="color: #000; font-weight: bold">not</span> <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #333">-</span><span style="color: #00D; font-weight: bold">5</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">+=</span> <span style="color: #60E; font-weight: bold">0.3</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">+=</span> <span style="color: #007020">self</span><span style="color: #333">.</span>dy
+
+        <span style="color: #888"># 3. Ground Collision</span>
+        <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">&gt;</span> FLOOR_Y:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> FLOOR_Y
+            <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">draw</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>cls(<span style="color: #00D; font-weight: bold">0</span>)
+        pyxel<span style="color: #333">.</span>rect(<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">108</span>, WIDTH, <span style="color: #00D; font-weight: bold">12</span>, <span style="color: #00D; font-weight: bold">11</span>) 
+
+        <span style="color: #888"># 4. Logic to choose the correct Sprite (U, V)</span>
+        <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping:
+            <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">&lt;</span> <span style="color: #00D; font-weight: bold">0</span>: 
+                <span style="color: #888"># Jumping up (Ascending)</span>
+                u, v <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">8</span>
+            <span style="color: #080; font-weight: bold">else</span>:
+                <span style="color: #888"># Falling down (Descending)</span>
+                u, v <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">0</span>
+        <span style="color: #080; font-weight: bold">else</span>:
+            <span style="color: #888"># On the ground (Idle)</span>
+            u, v <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">0</span> 
+
+        <span style="color: #888"># 5. Render the chosen sprite</span>
+        pyxel<span style="color: #333">.</span>blt(<span style="color: #007020">self</span><span style="color: #333">.</span>x, <span style="color: #007020">self</span><span style="color: #333">.</span>y, <span style="color: #00D; font-weight: bold">0</span>, u, v, <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">*</span> <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">2</span>)
+
+SimplePlatformer()
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class='lesson-block'>
+            <h1 style='font-size: 16pt;'>05_generic_platforms.py</h1>
+            <div style='font-size: 6.112054329371817pt; line-height: 8.556876061120542pt;'>
+                <div class="highlight" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><span style="color: #080; font-weight: bold">import</span><span style="color: #BBB"> </span><span style="color: #0E84B5; font-weight: bold">pyxel</span>
+
+WIDTH <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">160</span>
+HEIGHT <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">120</span>
+
+<span style="color: #080; font-weight: bold">class</span><span style="color: #BBB"> </span><span style="color: #B06; font-weight: bold">SimplePlatformer</span>:
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">__init__</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>init(WIDTH, HEIGHT, title<span style="color: #333">=</span><span style="background-color: #FFF0F0">&quot;Lesson 6: Multiple Platforms&quot;</span>)
+        pyxel<span style="color: #333">.</span>load(<span style="background-color: #FFF0F0">&quot;my_resource.pyxres&quot;</span>)
+        
+        <span style="color: #888"># 1. Define our world platforms [x, y, w, h]</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>platforms <span style="color: #333">=</span> [
+            [<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">110</span>, <span style="color: #00D; font-weight: bold">160</span>, <span style="color: #00D; font-weight: bold">10</span>],   <span style="color: #888"># Main floor</span>
+            [<span style="color: #00D; font-weight: bold">40</span>, <span style="color: #00D; font-weight: bold">80</span>, <span style="color: #00D; font-weight: bold">40</span>, <span style="color: #00D; font-weight: bold">4</span>],     <span style="color: #888"># Low ledge</span>
+            [<span style="color: #00D; font-weight: bold">100</span>, <span style="color: #00D; font-weight: bold">60</span>, <span style="color: #00D; font-weight: bold">40</span>, <span style="color: #00D; font-weight: bold">4</span>],    <span style="color: #888"># High ledge</span>
+        ]
+        
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">80</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>               <span style="color: #888"># Start in the air</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">1</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+
+        pyxel<span style="color: #333">.</span>run(<span style="color: #007020">self</span><span style="color: #333">.</span>update, <span style="color: #007020">self</span><span style="color: #333">.</span>draw)
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">update</span>(<span style="color: #007020">self</span>):
+        <span style="color: #888"># Movement</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_LEFT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">-=</span> <span style="color: #00D; font-weight: bold">2</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #333">-</span><span style="color: #00D; font-weight: bold">1</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_RIGHT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">+=</span> <span style="color: #00D; font-weight: bold">2</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">1</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">%=</span> WIDTH
+
+        <span style="color: #888"># Physics</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">+=</span> <span style="color: #60E; font-weight: bold">0.3</span>
+        new_y <span style="color: #333">=</span> <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">+</span> <span style="color: #007020">self</span><span style="color: #333">.</span>dy
+        on_platform <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+        
+        <span style="color: #080; font-weight: bold">for</span> plat <span style="color: #000; font-weight: bold">in</span> <span style="color: #007020">self</span><span style="color: #333">.</span>platforms:
+            px, py, pw, _ <span style="color: #333">=</span> plat
+            <span style="color: #888"># Check if player&#39;s X is within platform width</span>
+            <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">+</span> <span style="color: #00D; font-weight: bold">8</span> <span style="color: #333">&gt;</span> px <span style="color: #000; font-weight: bold">and</span> <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">&lt;</span> px <span style="color: #333">+</span> pw:
+                <span style="color: #888"># Check if player&#39;s feet are hitting the top of the platform</span>
+                <span style="color: #888"># (and only if we are falling down)</span>
+                <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">+</span> <span style="color: #00D; font-weight: bold">8</span> <span style="color: #333">&lt;=</span> py <span style="color: #000; font-weight: bold">and</span> new_y <span style="color: #333">+</span> <span style="color: #00D; font-weight: bold">8</span> <span style="color: #333">&gt;=</span> py:
+                    <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> py <span style="color: #333">-</span> <span style="color: #00D; font-weight: bold">8</span> <span style="color: #888"># Snap to top</span>
+                    <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>
+                    <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+                    on_platform <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+                    <span style="color: #080; font-weight: bold">break</span>
+        
+        <span style="color: #080; font-weight: bold">if</span> <span style="color: #000; font-weight: bold">not</span> on_platform:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> new_y
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+
+        <span style="color: #888"># Jump Trigger</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btnp(pyxel<span style="color: #333">.</span>KEY_SPACE) <span style="color: #000; font-weight: bold">and</span> <span style="color: #000; font-weight: bold">not</span> <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #333">-</span><span style="color: #00D; font-weight: bold">5</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">draw</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>cls(<span style="color: #00D; font-weight: bold">0</span>)
+        <span style="color: #080; font-weight: bold">for</span> plat <span style="color: #000; font-weight: bold">in</span> <span style="color: #007020">self</span><span style="color: #333">.</span>platforms:
+            pyxel<span style="color: #333">.</span>rect(<span style="color: #333">*</span>plat, <span style="color: #00D; font-weight: bold">11</span>) 
+
+        <span style="color: #888"># Choose sprite based on state</span>
+        <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping:
+            u, v <span style="color: #333">=</span> (<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">8</span>) <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">&lt;</span> <span style="color: #00D; font-weight: bold">0</span> <span style="color: #080; font-weight: bold">else</span> (<span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">0</span>)
+        <span style="color: #080; font-weight: bold">else</span>:
+            u, v <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">0</span>
+            
+        pyxel<span style="color: #333">.</span>blt(<span style="color: #007020">self</span><span style="color: #333">.</span>x, <span style="color: #007020">self</span><span style="color: #333">.</span>y, <span style="color: #00D; font-weight: bold">0</span>, u, v, <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">*</span> <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">2</span>)
+
+SimplePlatformer()
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class='lesson-block'>
+            <h1 style='font-size: 16pt;'>06_some_sounds.py</h1>
+            <div style='font-size: 6.193548387096774pt; line-height: 8.670967741935483pt;'>
+                <div class="highlight" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><span style="color: #080; font-weight: bold">import</span><span style="color: #BBB"> </span><span style="color: #0E84B5; font-weight: bold">pyxel</span>
+
+WIDTH, HEIGHT <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">160</span>, <span style="color: #00D; font-weight: bold">120</span>
+<span style="color: #080; font-weight: bold">class</span><span style="color: #BBB"> </span><span style="color: #B06; font-weight: bold">SimplePlatformer</span>:
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">__init__</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>init(WIDTH, HEIGHT, title<span style="color: #333">=</span><span style="background-color: #FFF0F0">&quot;Lesson 7: Sound Effects&quot;</span>)
+        pyxel<span style="color: #333">.</span>load(<span style="background-color: #FFF0F0">&quot;my_resource.pyxres&quot;</span>)
+        
+        <span style="color: #888"># 1. Define Jump Sound (Sound 0)</span>
+        pyxel<span style="color: #333">.</span>sounds[<span style="color: #00D; font-weight: bold">0</span>]<span style="color: #333">.</span>set(<span style="background-color: #FFF0F0">&quot;c3c4&quot;</span>, <span style="background-color: #FFF0F0">&quot;S&quot;</span>, <span style="background-color: #FFF0F0">&quot;7&quot;</span>, <span style="background-color: #FFF0F0">&quot;N&quot;</span>, <span style="color: #00D; font-weight: bold">5</span>)
+        
+        <span style="color: #888"># 2. Define Landing Sound (Sound 1)</span>
+        pyxel<span style="color: #333">.</span>sounds[<span style="color: #00D; font-weight: bold">1</span>]<span style="color: #333">.</span>set(<span style="background-color: #FFF0F0">&quot;g1&quot;</span>, <span style="background-color: #FFF0F0">&quot;N&quot;</span>, <span style="background-color: #FFF0F0">&quot;5&quot;</span>, <span style="background-color: #FFF0F0">&quot;F&quot;</span>, <span style="color: #00D; font-weight: bold">10</span>)
+
+        <span style="color: #007020">self</span><span style="color: #333">.</span>platforms <span style="color: #333">=</span> [[<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">110</span>, <span style="color: #00D; font-weight: bold">160</span>, <span style="color: #00D; font-weight: bold">10</span>], [<span style="color: #00D; font-weight: bold">40</span>, <span style="color: #00D; font-weight: bold">80</span>, <span style="color: #00D; font-weight: bold">40</span>, <span style="color: #00D; font-weight: bold">4</span>], [<span style="color: #00D; font-weight: bold">100</span>, <span style="color: #00D; font-weight: bold">60</span>, <span style="color: #00D; font-weight: bold">40</span>, <span style="color: #00D; font-weight: bold">4</span>]]
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x, <span style="color: #007020">self</span><span style="color: #333">.</span>y, <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">80</span>, <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">0</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">1</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+
+        pyxel<span style="color: #333">.</span>run(<span style="color: #007020">self</span><span style="color: #333">.</span>update, <span style="color: #007020">self</span><span style="color: #333">.</span>draw)
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">update</span>(<span style="color: #007020">self</span>):
+        <span style="color: #888"># Movement</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_LEFT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">-=</span> <span style="color: #00D; font-weight: bold">2</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #333">-</span><span style="color: #00D; font-weight: bold">1</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btn(pyxel<span style="color: #333">.</span>KEY_RIGHT):
+            <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">+=</span> <span style="color: #00D; font-weight: bold">2</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">1</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">%=</span> WIDTH
+
+        <span style="color: #888"># Physics</span>
+        <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">+=</span> <span style="color: #60E; font-weight: bold">0.3</span>
+        new_y <span style="color: #333">=</span> <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">+</span> <span style="color: #007020">self</span><span style="color: #333">.</span>dy
+        on_platform <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+        
+        <span style="color: #080; font-weight: bold">for</span> plat <span style="color: #000; font-weight: bold">in</span> <span style="color: #007020">self</span><span style="color: #333">.</span>platforms:
+            px, py, pw, _ <span style="color: #333">=</span> plat
+            <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">+</span> <span style="color: #00D; font-weight: bold">8</span> <span style="color: #333">&gt;</span> px <span style="color: #000; font-weight: bold">and</span> <span style="color: #007020">self</span><span style="color: #333">.</span>x <span style="color: #333">&lt;</span> px <span style="color: #333">+</span> pw:
+                <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">+</span> <span style="color: #00D; font-weight: bold">8</span> <span style="color: #333">&lt;=</span> py <span style="color: #000; font-weight: bold">and</span> new_y <span style="color: #333">+</span> <span style="color: #00D; font-weight: bold">8</span> <span style="color: #333">&gt;=</span> py:
+                    <span style="color: #888"># Trigger Landing Sound</span>
+                    <span style="color: #888"># We only play it if we were actually falling (is_jumping was True)</span>
+                    <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping:
+                        pyxel<span style="color: #333">.</span>play(<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">1</span>) <span style="color: #888"># (channel, sound_no)</span>
+                    
+                    <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> py <span style="color: #333">-</span> <span style="color: #00D; font-weight: bold">8</span>
+                    <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>
+                    <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">False</span>
+                    on_platform <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+                    <span style="color: #080; font-weight: bold">break</span>
+        
+        <span style="color: #080; font-weight: bold">if</span> <span style="color: #000; font-weight: bold">not</span> on_platform:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>y <span style="color: #333">=</span> new_y
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+
+        <span style="color: #888"># Jump Trigger</span>
+        <span style="color: #080; font-weight: bold">if</span> pyxel<span style="color: #333">.</span>btnp(pyxel<span style="color: #333">.</span>KEY_SPACE) <span style="color: #000; font-weight: bold">and</span> <span style="color: #000; font-weight: bold">not</span> <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping:
+            <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">=</span> <span style="color: #333">-</span><span style="color: #00D; font-weight: bold">5</span>
+            <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping <span style="color: #333">=</span> <span style="color: #080; font-weight: bold">True</span>
+            <span style="color: #888"># 4. Trigger Jump Sound</span>
+            pyxel<span style="color: #333">.</span>play(<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">0</span>)
+
+    <span style="color: #080; font-weight: bold">def</span><span style="color: #BBB"> </span><span style="color: #06B; font-weight: bold">draw</span>(<span style="color: #007020">self</span>):
+        pyxel<span style="color: #333">.</span>cls(<span style="color: #00D; font-weight: bold">0</span>)
+        <span style="color: #080; font-weight: bold">for</span> plat <span style="color: #000; font-weight: bold">in</span> <span style="color: #007020">self</span><span style="color: #333">.</span>platforms:
+            pyxel<span style="color: #333">.</span>rect(<span style="color: #333">*</span>plat, <span style="color: #00D; font-weight: bold">11</span>) 
+        
+        <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>is_jumping:
+            u, v <span style="color: #333">=</span> (<span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">8</span>) <span style="color: #080; font-weight: bold">if</span> <span style="color: #007020">self</span><span style="color: #333">.</span>dy <span style="color: #333">&lt;</span> <span style="color: #00D; font-weight: bold">0</span> <span style="color: #080; font-weight: bold">else</span> (<span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">0</span>)
+        <span style="color: #080; font-weight: bold">else</span>:
+            u, v <span style="color: #333">=</span> <span style="color: #00D; font-weight: bold">0</span>, <span style="color: #00D; font-weight: bold">0</span>
+            
+        pyxel<span style="color: #333">.</span>blt(<span style="color: #007020">self</span><span style="color: #333">.</span>x, <span style="color: #007020">self</span><span style="color: #333">.</span>y, <span style="color: #00D; font-weight: bold">0</span>, u, v, <span style="color: #007020">self</span><span style="color: #333">.</span>facing_sign <span style="color: #333">*</span> <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">8</span>, <span style="color: #00D; font-weight: bold">2</span>)
+
+SimplePlatformer()
+</pre></div>
+
+            </div>
+        </div>
+        </body></html>
