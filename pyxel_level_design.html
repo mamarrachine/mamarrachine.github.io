@@ -1,0 +1,163 @@
+"""Python em Mamarrachine: 
+
+Este código ya nos da un juego bastante decente en el que probar plataformas diferentes.
+
+Aunque lo que hacemos es definir nuestro nivel de videojuego, estamos practicando
+algo muy importante al programar Python: el uso de listas.
+
+Tanto las plataformas como las habitaciones las guardamos como listas de valores.
+
+Una lista se define con un nombre, un signo igual, un corchete liso, los elementos de la lista
+separados por comas y un corchete liso de cierre:
+
+esta_es_mi_lista = [42, "una frase, siempre entre comillas", [], {"un_diccionario": "bastante_inutil" }]
+    
+La lista no tiene por qué estar toda en la misma línea:ç
+
+esta_es_mi_lista = [
+    42,
+    "una frase, siempre entre comillas",
+    [],
+    {"un_diccionario": "bastante_inutil" },
+]
+
+Si queremos tener una lista vacía al comienzo pero en la que iremos metiendo cosas, basta con poner []:
+
+mi_lista_vacia_al_principio = []
+
+Y luego podemos ir añadiendo elementos con .append():
+
+mi_lista_vacia_al_principio.append(42)
+mi_lista_vacia_al_principio.append("una frase, siempre entre comillas")
+mi_lista_vacia_al_principio.append([])
+mi_lista_vacia_al_principio.append({"un_diccionario": "bastante_inutil" })
+
+Esta lista ahora tiene exactamente el mismo contenido que esta_es_mi_lista
+
+"""
+import pyxel
+
+# Tamaño de la pantalla en píxeles
+WIDTH, HEIGHT = 160, 120
+
+# Altura del suelo en todas las habitaciones
+FLOOR_HEIGHT = 10
+
+# Como el suelo es igual siempre, nos lo guardamos en esta lista para reutilizarlo
+FLOOR_PLATFORM = [0, HEIGHT - FLOOR_HEIGHT, WIDTH, FLOOR_HEIGHT]
+
+# Aquí definimos las habitaciones de nuestro nivel
+ROOMS = [
+    [FLOOR_PLATFORM, [40, 80, 40, 4], [100, 60, 40, 4], [150, 15 , 10, 4]],
+    [FLOOR_PLATFORM, [50, 90, 80, 4], [ 40, 50, 20, 4]],
+]
+
+# Aquí definimos donde está el tesoro (final del nivel)
+DOOR = {
+    "room": 0,
+    "position": (150, 7)
+}
+
+# Aquí le ponemos nombre a los distintos huecos para sonidos que tenemos
+JUMP_SOUND_INDEX = 0
+LANDING_SOUND_INDEX = 1
+
+class SimplePlatformer:
+    def __init__(self):
+        pyxel.init(WIDTH, HEIGHT, title="Lesson 7: Habitaciones")
+        pyxel.load("my_resource.pyxres")
+        
+        # Define Jump Sound (Sound 0)
+        pyxel.sounds[JUMP_SOUND_INDEX].set("c3c4", "S", "7", "N", 5)
+        
+        # Define Landing Sound (Sound 1)
+        pyxel.sounds[LANDING_SOUND_INDEX].set("g1", "N", "5", "F", 10)
+
+        self.active_room = 0
+        self.x, self.y, self.dy = 80, 0, 0
+        self.facing_sign = 1
+        self.is_jumping = True
+
+        pyxel.run(self.update, self.draw)
+
+    def update(self):
+        
+        # Movement
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 2
+            self.facing_sign = -1
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 2
+            self.facing_sign = 1
+        if self.x < 0:
+            self.active_room -= 1
+        elif self.x >= WIDTH:
+            self.active_room += 1
+        
+        # Calculamos en qué habitación estamos
+        self.active_room %= len(ROOMS)
+        
+        # Calculamos en que posición horizontal estamos (posición X)
+        self.x %= WIDTH
+        
+        # Cargamos las plataformas de la habitación en la que estamos
+        self.platforms = ROOMS[self.active_room]
+
+
+        # Calculamos la gravedad por si estuviéramos saltando
+        self.dy += 0.3
+        new_y = self.y + self.dy
+        on_platform = False
+        
+        # Miramos todas las plataformas para ver si chocamos
+        for plat in self.platforms:
+            px, py, pw, _ = plat
+            
+            # Comprobamos si nuestro personaje colisiona con la plataforma saltando
+            if self.x + 8 > px and self.x < px + pw:
+                if self.y + 8 <= py and new_y + 8 >= py:
+                    # Reproducimos el sonido de tocar el suelo
+                    # Pero sólo si estábamos saltando
+                    if self.is_jumping:
+                        pyxel.play(0, 1) # (channel, sound_no)
+                    
+                    # Ajustamos la posición para que caiga exactamente en la plataforma
+                    self.y = py - 8
+                    self.dy = 0
+                    self.is_jumping = False
+                    on_platform = True
+                    
+                    break
+        
+        # Si resulta que no hemos tocado plataforma,
+        # seguimos cayendo y seguimos saltando
+        if not on_platform:
+            self.y = new_y
+            self.is_jumping = True
+
+        # Jump Trigger
+        if pyxel.btnp(pyxel.KEY_SPACE) and not self.is_jumping:
+            self.dy = -5
+            self.is_jumping = True
+            # Trigger Jump Sound
+            pyxel.play(0, 0)
+
+    def draw(self):
+        pyxel.cls(0)
+        for plat in self.platforms:
+            pyxel.rect(*plat, 11) 
+        
+        if self.is_jumping:
+            u, v = (0, 8) if self.dy < 0 else (8, 0)
+        else:
+            u, v = 0, 0
+ 
+         # Si estamos en la habitación de la puerta, la pintamos
+        if self.active_room == DOOR["room"]:
+            # ¿Sabes explicar qué hace esta línea?
+            pyxel.blt(DOOR["position"][0], DOOR["position"][1], 0, 8, 8, 8, 8, 2)
+            
+    
+        pyxel.blt(self.x, self.y, 0, u, v, self.facing_sign * 8, 8, 2)
+
+SimplePlatformer()
