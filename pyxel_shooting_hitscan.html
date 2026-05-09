@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Code Viewer</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; max-width: 800px; margin: auto; }
+        
+        /* Container for positioning the button */
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background: #444;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .copy-button:hover { background: #666; }
+        
+        /* Adjusting the Prism block padding to fit the button */
+        pre[class*="language-"] {
+            padding: 1.5em !important;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Project Script</h2>
+    
+    <div class="code-container">
+        <button class="copy-button" onclick="copyCode()">Copy</button>
+        <pre><code id="python-code" class="language-python">
+""" Hitscan laser
+
+Cuando queremos tener disparos en nuestros juegos hay varias formas de programarlo.
+
+Las dos clases más generales de tipos de disparos son HITSCAN y PROJECTILE
+
+En este ejemplo vamos a implementar un disparo HITSCAN, ya que es más sencillo y nos va a permitir
+programar que aparezcan enemigos.
+
+"""
+
+import pyxel
+
+# Tamaño de la pantalla en píxeles
+WIDTH, HEIGHT = 160, 120
+
+# Altura del suelo en todas las habitaciones
+FLOOR_HEIGHT = 10
+
+# Como el suelo es igual siempre, nos lo guardamos en esta lista para reutilizarlo
+FLOOR_PLATFORM = [0, HEIGHT - FLOOR_HEIGHT, WIDTH, FLOOR_HEIGHT]
+
+ALTURA_PLATAFORMA = 2
+# Aquí definimos las habitaciones de nuestro nivel
+ROOMS = [
+    [FLOOR_PLATFORM, [40, 80, 40, ALTURA_PLATAFORMA], [100, 60, 40, ALTURA_PLATAFORMA], [150, 15 , 10, ALTURA_PLATAFORMA]],
+    [FLOOR_PLATFORM, [50, 90, 80, ALTURA_PLATAFORMA], [ 40, 50, 20, ALTURA_PLATAFORMA]],
+]
+
+# Aquí definimos donde está el tesoro (final del nivel)
+DOOR = {
+    "room": 0,
+    "position": (150, 7),
+    "collision": False,
+}
+
+# --- NUEVO: Enemigos por habitación ---
+# Cada enemigo es [x, y, vivo (True/False)]
+ENEMIES = [
+    [[60, 72, True], [120, 52, True]], # Enemigos habitación 0
+    [[80, 82, True]],                  # Enemigos habitación 1
+]
+
+# Aquí le ponemos nombre a los distintos huecos para sonidos que tenemos
+JUMP_SOUND_INDEX = 0
+LANDING_SOUND_INDEX = 1
+
+# Aquí asumimos que el personaje es siempre cuadrado y de este
+# tamaño en pixels por lado
+CHARACTER_SIDE_PIXELS = 8
+
+class SimplePlatformer:
+    def __init__(self):
+        pyxel.init(WIDTH, HEIGHT, title="Lesson 7: Habitaciones")
+        pyxel.load("my_resource.pyxres")
+        
+        # Define Jump Sound (Sound 0)
+        pyxel.sounds[JUMP_SOUND_INDEX].set("c3c4", "S", "7", "N", 5)
+        
+        # Define Landing Sound (Sound 1)
+        pyxel.sounds[LANDING_SOUND_INDEX].set("g1", "N", "5", "F", 10)
+
+        self.active_room = 0
+        self.x, self.y, self.dy = 80, 0, 0
+        self.facing_sign = 1
+        self.is_jumping = True
+        self.on_platform = False
+        
+        # --- NUEVO: Estado del láser ---
+        self.laser_timer = 0 # Para que el láser brille un momento
+
+        pyxel.run(self.update, self.draw)
+
+    def _update_movement(self):
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 2
+            self.facing_sign = -1
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 2
+            self.facing_sign = 1
+        if self.x < 0:
+            self.active_room -= 1
+        elif self.x >= WIDTH:
+            self.active_room += 1
+            
+    def _update_room(self):
+        
+        # Calculamos en qué habitación estamos
+        self.active_room %= len(ROOMS)
+        
+        # Calculamos en que posición horizontal estamos (posición X)
+        self.x %= WIDTH
+        
+        # Cargamos las plataformas de la habitación en la que estamos
+        self.platforms = ROOMS[self.active_room]
+        
+        # NUEVO: Mostramos los enemigos vivos en la sala
+        self.current_enemies = ENEMIES[self.active_room] # Cargar enemigos de la sala
+
+    def _update_gravity(self):
+        
+        # Calculamos la gravedad por si estuviéramos saltando
+        self.dy += 0.3
+        self.on_platform = False
+        
+        # Devolvemos la posición vertical que resultaría
+        # si aplicásemos la gravedad
+        return self.y + self.dy
+    
+    # NUEVO! Lógica hitscan del laser
+    def _update_laser(self):
+        if self.laser_timer > 0:
+            self.laser_timer -= 1
+
+        if pyxel.btnp(pyxel.KEY_X):
+            self.laser_timer = 5 # El láser se verá durante 5 frames
+            
+            # Lógica Hitscan:
+            # El láser sale del centro del personaje (self.y + 4)
+            laser_y = self.y + 4
+            
+            for enemy in self.current_enemies:
+                ex, ey, alive = enemy
+                if alive:
+                    # Comprobamos si el láser está a la altura del enemigo
+                    if ey <= laser_y <= ey + 8:
+                        # Comprobamos si el enemigo está en la dirección hacia donde miramos
+                        if self.facing_sign == 1 and ex > self.x: # Derecha
+                            enemy[2] = False # ¡Muerto!
+                        elif self.facing_sign == -1 and ex < self.x: # Izquierda
+                            enemy[2] = False
+    
+    def update(self):
+        
+        self._update_movement()
+        self._update_room()
+        self._update_laser()
+
+        new_y = self._update_gravity()
+        
+        # Miramos todas las plataformas para ver si chocamos
+        for plat in self.platforms:
+            px, py, pw, _ = plat
+            
+            # Comprobamos si nuestro personaje colisiona con la plataforma saltando
+            if self.x + CHARACTER_SIDE_PIXELS > px and self.x < px + pw:
+                if self.y + CHARACTER_SIDE_PIXELS <= py and new_y + CHARACTER_SIDE_PIXELS >= py:
+                    # Reproducimos el sonido de tocar el suelo
+                    # Pero sólo si estábamos saltando
+                    if self.is_jumping:
+                        pyxel.play(0, 1) # (channel, sound_no)
+                    
+                    # Ajustamos la posición para que caiga exactamente en la plataforma
+                    self.y = py - CHARACTER_SIDE_PIXELS
+                    self.dy = 0
+                    self.is_jumping = False
+                    self.on_platform = True
+                    
+                    break
+        
+        # Si resulta que no hemos tocado plataforma,
+        # seguimos cayendo y seguimos saltando
+        if not self.on_platform:
+            self.y = new_y
+            self.is_jumping = True
+
+        # Jump Trigger
+        if pyxel.btnp(pyxel.KEY_SPACE) and not self.is_jumping:
+            self.dy = -5
+            self.is_jumping = True
+            # Trigger Jump Sound
+            pyxel.play(0, 0)
+        
+        x_door = DOOR["position"][0]
+        y_door = DOOR["position"][1]
+        
+        bounding_box_side = 4
+        x_collision = self.x < x_door + bounding_box_side and self.x > x_door - bounding_box_side
+        y_collision = self.y < y_door + bounding_box_side and self.y > y_door - bounding_box_side
+        
+        DOOR["collision"] = x_collision and y_collision and not self.is_jumping
+        
+    def draw(self):
+        pyxel.cls(0)
+        for plat in self.platforms:
+            pyxel.rect(*plat, 11)
+        
+        # NUEVO: Dibujar enemigos
+        for ex, ey, alive in self.current_enemies:
+            if alive:
+                pyxel.rect(ex, ey, 8, 8, 8) # Cuadrado rojo para enemigos
+
+        # NUEVO: Dibujar Láser
+        if self.laser_timer > 0:
+            color = pyxel.frame_count % 16 # Efecto de parpadeo
+            lx = self.x + 4
+            ly = self.y + 4
+            target_x = WIDTH if self.facing_sign == 1 else 0
+            pyxel.line(lx, ly, target_x, ly, 10 if color < 8 else 7)
+        
+        if self.is_jumping:
+            u, v = (0, CHARACTER_SIDE_PIXELS) if self.dy < 0 else (CHARACTER_SIDE_PIXELS, 0)
+        else:
+            u, v = 0, 0
+ 
+         # Si estamos en la habitación de la puerta, la pintamos
+        if self.active_room == DOOR["room"]:
+            # ¿Sabes explicar qué hace esta línea?
+            pyxel.blt(DOOR["position"][0], DOOR["position"][1], 0, 8, 8, 8, 8, 2)
+            
+    
+        pyxel.blt(self.x, self.y, 0, u, v, self.facing_sign * 8, 8, 2)
+        
+        if DOOR["collision"]:
+            pyxel.text(20, 20, "Wiiii!!!", pyxel.rndi(1, 15))
+
+SimplePlatformer()
+
+"""Ejercicios
+
+- Reemplazar los enemigos por un sprite chulo
+- Añadir un sonido cuando se dispara el láser
+- Añadir un sonido cuando los enemigos mueren
+- Animar a los enemigos
+- Que la puerta esté cerrada hasta que matemos a todos los enemigos
+- Alternativa: cuando matamos al último enemigo, suelta una llave
+- Que nos muramos al tocar un enemigo
+- Que los enemigos se muevan
+- Anota todas las mejoras que le quieras hacer a tu juego en una lista TODO
+"""
+
+        </code></pre>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <script>
+        function copyCode() {
+            const code = document.getElementById('python-code').innerText;
+            const btn = document.querySelector('.copy-button');
+            
+            navigator.clipboard.writeText(code).then(() => {
+                btn.innerText = '¡Copiado!';
+                setTimeout(() => { btn.innerText = 'Copiar'; }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+
+</body>
+</html>
